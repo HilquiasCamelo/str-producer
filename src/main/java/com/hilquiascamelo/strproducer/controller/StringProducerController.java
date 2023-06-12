@@ -1,6 +1,7 @@
 package com.hilquiascamelo.strproducer.controller;
 
 import com.hilquiascamelo.strproducer.services.StringProducerService;
+import com.hilquiascamelo.strproducer.util.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,8 +29,12 @@ public class StringProducerController {
      * @return Uma resposta HTTP indicando o status da operação.
      */
     @PostMapping
-    public ResponseEntity<Object> sendMessage(@RequestBody String message) {
+    public ResponseEntity<MessageResponse> sendMessage(@RequestBody String message) {
         producerService.sendMessage(message);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new MessageResponse("Mensagem enviada com sucesso!" , HttpStatus.CREATED ));
     }
+
 }
