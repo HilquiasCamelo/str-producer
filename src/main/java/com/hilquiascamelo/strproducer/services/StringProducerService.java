@@ -1,12 +1,10 @@
 package com.hilquiascamelo.strproducer.services;
 
-import com.hilquiascamelo.strproducer.util.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +44,7 @@ public class StringProducerService {
         String partition = String.valueOf(recordMetadata.partition());
         String offset = String.valueOf(recordMetadata.offset());
 
-        String logMessage = String.format("Mensagem enviada com sucesso: %s\n" +
+        String logMessage = String.format("Producer -  Mensagem enviada com sucesso: %s\n" +
                                           "Detalhes do envio - Partição: %s, Offset: %s", message, partition, offset);
 
         log.info(logMessage);
