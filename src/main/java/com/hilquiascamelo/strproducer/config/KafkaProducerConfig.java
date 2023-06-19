@@ -27,7 +27,7 @@ public class KafkaProducerConfig {
      * @return A fábrica de produtores configurada.
      */
     @Bean
-    public ProducerFactory<String, ObjectTextModel> objectTextFactory() {
+    public ProducerFactory<String, Object> objectTextFactory() {
         Map<String, Object> configs = new HashMap<>();
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getBootstrapServers());
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -43,7 +43,7 @@ public class KafkaProducerConfig {
      * @return O template Kafka configurado com a fábrica de produtores fornecida.
      */
     @Bean
-    public KafkaTemplate<String, ObjectTextModel> objectTextKafkaTemplate(ProducerFactory<String, ObjectTextModel> objectTextFactory) {
+    public KafkaTemplate<String, Object> objectTextKafkaTemplate(ProducerFactory<String, Object> objectTextFactory) {
         return new KafkaTemplate<>(objectTextFactory);
     }
 

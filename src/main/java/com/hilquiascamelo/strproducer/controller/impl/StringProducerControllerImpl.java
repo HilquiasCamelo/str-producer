@@ -2,8 +2,8 @@ package com.hilquiascamelo.strproducer.controller.impl;
 
 import com.hilquiascamelo.strproducer.controller.StringProducerController;
 import com.hilquiascamelo.strproducer.model.ObjectTextModel;
-import com.hilquiascamelo.strproducer.services.StringProducerService;
-import com.hilquiascamelo.strproducer.services.impl.ObjectTextInterfaceImpl;
+import com.hilquiascamelo.strproducer.services.ObjectSendProducer;
+
 import com.hilquiascamelo.strproducer.util.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class StringProducerControllerImpl implements StringProducerController {
 
-    private final StringProducerService producerService;
-    private final ObjectTextInterfaceImpl objectTextInterface;
+
+    private final ObjectSendProducer objectSendProducer;
 
     /**
      * Método POST para enviar uma mensagem de string.
@@ -33,7 +33,7 @@ public class StringProducerControllerImpl implements StringProducerController {
      */
     @PostMapping("/message")
     public ResponseEntity < MessageResponse > sendMessage( @RequestBody String message) {
-        producerService.sendMessage(message);
+        objectSendProducer.send(message);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new MessageResponse("Mensagem enviada com sucesso!", HttpStatus.CREATED));
@@ -41,7 +41,7 @@ public class StringProducerControllerImpl implements StringProducerController {
 
     @PostMapping("/object")
     public ResponseEntity<ObjectTextModel> send(@RequestBody ObjectTextModel objectTextModel) {
-        objectTextInterface.send(objectTextModel);
+        objectSendProducer.send(objectTextModel);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(objectTextModel);
