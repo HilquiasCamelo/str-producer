@@ -5,5 +5,5 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 
 public interface ObjectSendProducer {
     void send(Object object);
-    void logInfo(String string);
+
 }

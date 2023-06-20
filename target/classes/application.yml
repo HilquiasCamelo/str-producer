@@ -5,5 +5,17 @@ spring:
   kafka:
     producer:
       bootstrap-servers: localhost:29092
-  main:
-    allow-bean-definition-overriding: true
+
+spring.datasource:
+  url: jdbc:postgresql://localhost:5432/sistemas_logs
+  username: admin
+  password: admin
+  driver-class-name: org.postgresql.Driver
+
+spring.jpa:
+  database-platform: org.hibernate.dialect.PostgreSQLDialect
+  hibernate:
+    ddl-auto: update
+
+spring.devtools:
+  add-properties: true
