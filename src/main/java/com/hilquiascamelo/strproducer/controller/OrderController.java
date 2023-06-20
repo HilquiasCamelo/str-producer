@@ -1,11 +1,12 @@
 package com.hilquiascamelo.strproducer.controller;
 
-import com.hilquiascamelo.strproducer.model.Order;
+import com.hilquiascamelo.strproducer.model.OrderEntity;
+import com.hilquiascamelo.strproducer.model.OrderEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
 public interface OrderController {
 
-    public ResponseEntity < Order > sendOrder( @RequestBody Order order);
+    public ResponseEntity < OrderEntity > sendOrder( @RequestBody OrderEntity order);
 
 }

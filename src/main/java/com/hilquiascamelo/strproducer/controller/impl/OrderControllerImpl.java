@@ -1,6 +1,6 @@
 package com.hilquiascamelo.strproducer.controller.impl;
 import com.hilquiascamelo.strproducer.controller.OrderController;
-import com.hilquiascamelo.strproducer.model.Order;
+import com.hilquiascamelo.strproducer.model.OrderEntity;
 
 import com.hilquiascamelo.strproducer.services.ObjectSendProducer;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class OrderControllerImpl implements OrderController {
     private final ObjectSendProducer objectSendProducer;
     @Override
     @RequestMapping ("/")
-    public ResponseEntity < Order > sendOrder ( @RequestBody Order order )
+    public ResponseEntity < OrderEntity > sendOrder ( @RequestBody OrderEntity order )
         {
             objectSendProducer.send( order );
             return ResponseEntity.status(HttpStatus.CREATED)
