@@ -1,11 +1,13 @@
 package com.hilquiascamelo.strproducer.services.impl;
 
-import com.hilquiascamelo.strproducer.services.ObjectSendProducer;
 import com.hilquiascamelo.strproducer.exceptions.ExceptionUtils;
+import com.hilquiascamelo.strproducer.repository.LogRepository;
+import com.hilquiascamelo.strproducer.services.ObjectSendProducer;
 import com.hilquiascamelo.strproducer.util.HasDateField;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -19,13 +21,15 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 @Service
 public class ObjectSendProducerImpl implements ObjectSendProducer {
+
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private static final int MAX_RETRY_ATTEMPTS = 5;
+    public static final int MAX_RETRY_ATTEMPTS = 5;
     private static final long BASE_WAIT_TIME_MS = 1000; // Tempo de espera base em milissegundos
 
-
-
+    @Override
     public void send(Object object) {
+        LogRepository logRepository;
+
         int attempt = 1; // Contador de tentativas
 
         while (attempt <= MAX_RETRY_ATTEMPTS) {
@@ -38,6 +42,10 @@ public class ObjectSendProducerImpl implements ObjectSendProducer {
                     String dateString = (String) date;
                     LocalDateTime dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                     hasDateField.setDate(dateTime); // Atualiza a propriedade "date" com o objeto LocalDateTime
+                }
+                else if( date == null ) {
+                    log.warn("Não foi possível atualizar a propriedade 'date' da classe {}", object.getClass().getName());
+                    log.info("Não foi possível atualizar a data, objeto nao contem data.");
                 }
             }
 

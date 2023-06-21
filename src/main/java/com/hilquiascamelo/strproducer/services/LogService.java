@@ -1,8 +1,9 @@
 package com.hilquiascamelo.strproducer.services;
 
+import com.hilquiascamelo.strproducer.model.LogEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface LogService {
-    void saveLog(String message, String logLevel);
+    void saveLog( LogEntity logEntity);
 }

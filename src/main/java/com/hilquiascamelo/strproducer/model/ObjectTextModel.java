@@ -1,8 +1,6 @@
 package com.hilquiascamelo.strproducer.model;
 
-import lombok.*;
-
-import lombok.Getter;
+import lombok.Data;
 
 import java.io.Serializable;
 

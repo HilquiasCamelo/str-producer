@@ -20,5 +20,5 @@ public class Address {
     private String state;
     private String zipCode;
 
-    // Adicione construtores, getters e setters conforme necessário
+
 }

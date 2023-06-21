@@ -2,40 +2,36 @@ package com.hilquiascamelo.strproducer.exceptions;
 
 import com.hilquiascamelo.strproducer.model.LogEntity;
 import com.hilquiascamelo.strproducer.repository.LogRepository;
+import com.hilquiascamelo.strproducer.services.LogService;
+import com.hilquiascamelo.strproducer.services.impl.LogServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.NetworkException;
 import org.apache.kafka.common.errors.SerializationException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
+@RequiredArgsConstructor
 public class ExceptionUtils {
-    private static LogRepository logRepository = null;
+
+    public static void setLogRepository(LogRepository repository) {
+        logRepository = repository;
+    }
+    public static LogRepository logRepository ;
     private static long baseWaitTimeMs = 0;
 
-    public ExceptionUtils(LogRepository logRepository, long baseWaitTimeMs) {
-        this.logRepository = logRepository;
-        this.baseWaitTimeMs = baseWaitTimeMs;
+    public static void handleSendFailure(Throwable ex) {
+
+        // Crie uma instância de LogEntity com as informações relevantes
+        LogEntity logEntity = new LogEntity();
+        logEntity.setMessage("Erro ao enviar para o tópico: " + ex.getMessage());
+        logEntity.setLogLevel("ERROR");
+
+        // Salve o objeto LogEntity usando o serviço de log
+        LogService logService = new LogServiceImpl(logRepository);
+        logService.saveLog(logEntity);
     }
 
-    public static void handleSendFailure ( Throwable ex ) {
-        saveLog("Erro ao enviar para o tópico: " + ex.getMessage(), "ERROR");
-
-        // Lógica personalizada de tratamento de erros
-        if (ex instanceof NetworkException) {
-            // Lidar com exceções de rede, se necessário
-            saveLog("Erro de rede: " + ex.getMessage(), "ERROR");
-            // Executar ações específicas para lidar com a exceção de rede
-        } else if (ex instanceof SerializationException) {
-            // Lidar com exceções de serialização, se necessário
-            saveLog("Erro de serialização: " + ex.getMessage(), "ERROR");
-            // Executar ações específicas para lidar com a exceção de serialização
-        } else {
-            // Lidar com outras exceções não tratadas anteriormente
-            saveLog("Erro não tratado: " + ex.getMessage(), "ERROR");
-            // Executar ações gerais de tratamento de erros
-        }
-
-        // Outras ações de tratamento de erros, se necessário
-    }
 
     private static void saveLog ( String message ,
                                   String level ) {

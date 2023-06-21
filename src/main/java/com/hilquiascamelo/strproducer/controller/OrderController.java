@@ -1,7 +1,6 @@
 package com.hilquiascamelo.strproducer.controller;
 
 import com.hilquiascamelo.strproducer.model.OrderEntity;
-import com.hilquiascamelo.strproducer.model.OrderEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
