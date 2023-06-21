@@ -7,43 +7,51 @@ import com.hilquiascamelo.strproducer.services.impl.LogServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.NetworkException;
-import org.apache.kafka.common.errors.SerializationException;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.LocalDateTime;
 
 @Slf4j
 @RequiredArgsConstructor
 public class ExceptionUtils {
 
-    public static void setLogRepository(LogRepository repository) {
-        logRepository = repository;
-    }
-    public static LogRepository logRepository ;
+    private static LogRepository logRepository;
+    private static LogService logService;
     private static long baseWaitTimeMs = 0;
 
-    public static void handleSendFailure(Throwable ex) {
-
-        // Crie uma instância de LogEntity com as informações relevantes
-        LogEntity logEntity = new LogEntity();
-        logEntity.setMessage("Erro ao enviar para o tópico: " + ex.getMessage());
-        logEntity.setLogLevel("ERROR");
-
-        // Salve o objeto LogEntity usando o serviço de log
-        LogService logService = new LogServiceImpl(logRepository);
-        logService.saveLog(logEntity);
+    public static void setLogService(LogService service) {
+        logService = service;
     }
 
+    @Autowired
+    public static void setLogRepository(LogRepository repository) {
+        logRepository = repository;
+        logService = new LogServiceImpl(logRepository);
+    }
 
-    private static void saveLog ( String message ,
-                                  String level ) {
+    public static void handleSendFailure(Throwable ex) {
+        if (ex != null) {
+            // Create an instance of LogEntity with relevant information
+            LogEntity logEntity = new LogEntity();
+            logEntity.setMessage("Erro ao enviar para o tópico: " + ex.getMessage());
+            logEntity.setLogLevel("ERROR");
+            logEntity.setTimestamp(LocalDateTime.now());
+
+            // Save the LogEntity object using the log service
+            logService.saveLog(logEntity);
+        }
+    }
+
+    private static void saveLog(String message, String level) {
         LogEntity logEntity = new LogEntity();
         logEntity.setMessage(message);
         logRepository.save(logEntity);
     }
 
-    public static boolean shouldRetryOnError ( Throwable cause ) {
-        // Lógica para determinar se uma nova tentativa de envio deve ser feita com base no erro específico
+    public static boolean shouldRetryOnError(Throwable cause) {
+        // Logic to determine if a retry should be attempted based on the specific error
 
-        // Exemplo: Vamos assumir que queremos reenviar apenas se a exceção for uma instância de NetworkException
+        // Example: Assume we want to retry only if the exception is an instance of NetworkException
         if (cause instanceof NetworkException) {
             return true;
         }
@@ -51,10 +59,10 @@ public class ExceptionUtils {
         return false;
     }
 
-    public static void waitBeforeRetry ( int attempt ) {
-        // Lógica para esperar um intervalo antes da próxima tentativa
+    public static void waitBeforeRetry(int attempt) {
+        // Logic to wait for an interval before the next retry
 
-        // Exemplo: Espera exponencial com base no número de tentativas
+        // Example: Exponential wait based on the number of attempts
         long waitTimeMillis = (long) (baseWaitTimeMs * Math.pow(2, attempt - 1));
         try {
             Thread.sleep(waitTimeMillis);
@@ -62,4 +70,6 @@ public class ExceptionUtils {
             saveLog("Erro ao pausar a execução: " + e.getMessage(), "ERROR");
         }
     }
+
+
 }

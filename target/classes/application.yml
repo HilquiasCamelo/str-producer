@@ -17,6 +17,10 @@ spring:
     show-sql: true
   devtools:
     add-properties: true
+  log:
+    console:
+      format: |
+        %d{HH:mm:ss} %-5p [%c{2.}] (%t) %X{requestID} %s%e%n
 
 swagger-ui:
   path: /api-docs
